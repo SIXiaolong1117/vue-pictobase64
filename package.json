@@ -11,16 +11,17 @@
     "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
+    "element-plus": "^2.2.15",
     "vue": "^3.2.16"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",
-    "concurrently": "^6.3.0",
+    "concurrently": "^7.3.0",
     "cross-env": "^7.0.3",
-    "electron": "^15.1.2",
-    "electron-builder": "^22.13.1",
+    "electron": "^20.1.0",
+    "electron-builder": "^23.3.3",
     "vite": "^2.6.4",
-    "wait-on": "^6.0.0"
+    "wait-on": "^6.0.1"
   },
   "build": {
     "appId": "com.my-website.my-app",

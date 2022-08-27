@@ -8,12 +8,13 @@ body {
 h2,
 h3,
 h4 {
-  margin: 0 0 0 0;
+  margin: 0;
   text-align: center;
 }
 
 h1 {
-  margin: 2% 0 0 0;
+  margin: 0;
+  padding: 2% 0 0 0;
   text-align: center;
   color: #4a5b64;
 }
@@ -35,26 +36,11 @@ hr {
 }
 
 nav {
-  width: 72%;
-  /* background-color: #7993a2; */
+  width: 100%;
   margin: 1% 0 1% 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
-}
-
-nav input {
-  width: 70px;
-}
-
-nav input,
-nav button {
-  /* font-size: 10px; */
-  -webkit-app-region: no-drag;
-}
-
-input[type="file"] {
-  color: transparent;
 }
 
 img {
@@ -96,19 +82,18 @@ textarea {
 
 .display {
   height: 100%;
-  width: 97%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
 }
 
-/* .code_div,
-.img_div {
-  margin: 3% 0 0 0;
-} */
-
 #time_diff,
 .timeDiff {
+  margin: 0;
+}
+
+#app{
   margin: 0;
 }

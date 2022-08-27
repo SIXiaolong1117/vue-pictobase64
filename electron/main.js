@@ -4,14 +4,15 @@ const path = require('path')
 
 const NODE_ENV = process.env.NODE_ENV
 
-function createWindow () {
+function createWindow() {
   // 创建浏览器窗口
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 700,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, 'preload.js'),
+      resizable: false,
+    },
   })
 
   // 加载 index.html
@@ -19,7 +20,7 @@ function createWindow () {
   mainWindow.loadURL(
     NODE_ENV === 'development'
       ? 'http://localhost:3001'
-      :`file://${path.join(__dirname, '../dist/index.html')}`
+      : `file://${path.join(__dirname, '../dist/index.html')}`
   );
 
   // 打开开发工具

@@ -7,6 +7,9 @@ export default {
     img_upload.addEventListener('change', readFile, false);
   },
   methods: {
+    openFile: function () {
+      document.getElementById('img_upload').click();
+    },
     tirggerFile: function (event) {
       var file = event.target.files[0]; // (利用console.log输出看结构就知道如何处理档案资料)
       console.log(file);
@@ -45,7 +48,11 @@ export default {
         .catch(err => {
           console.log('Something went wrong', err);
         })
-    }
+    },
+    // 刷新页面
+    InitEditor: function () {
+      location.reload()
+    },
   },
 }
 </script>
@@ -67,11 +74,11 @@ export default {
     </div>
   </div>
   <nav>
-    <input type="file" id="img_upload" @change="tirggerFile($event)" />
-    <!-- <input type="file" id="img_upload" hidden="hidden" />
-			<button><label for="img_upload">上传文件</label></button> -->
-    <button type="button" @onclick="copyCode()">复制 Base64</button>
-    <button type="button" onclick="javascript:location.reload()">清空内容</button>
+    <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开文件</el-button>
+    <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
+    <el-button id="copy_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
+    <!-- 原生input -->
+    <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
   </nav>
   <p id="time_diff"></p>
 </template>
