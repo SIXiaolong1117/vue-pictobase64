@@ -9,6 +9,8 @@ export default {
   },
   mounted() {
     window.readImge = this.readImge;
+    window.copyCode = this.copyCode;
+
 
     //阻止离开时的浏览器默认行为
     this.$refs.select_frame.ondragleave = (e) => {
@@ -57,6 +59,7 @@ export default {
       reader.addEventListener("load", function () {
         // 执行前计时
         var timeStart = Date.now()
+        preview.src = '';
         preview.src = this.result;
         base64_code.innerHTML = this.result;
         // 执行后计时
@@ -66,12 +69,13 @@ export default {
         // 输出时间差
         console.log("Conversion time: ", timeDiff, " ms");
         time_diff.innerHTML = '<h3 class="timeDiff">转换用时 ' + timeDiff + ' ms</h3><h4 class="timeDiff">Conversion time ' + timeDiff + ' ms</h4>';
+        // 调用拷贝
+        copyCode();
       }, false);
 
       if (file) {
         reader.readAsDataURL(file);
       }
-
     },
     // 打开文件，调用img_upload的click事件
     openFile: function () {
