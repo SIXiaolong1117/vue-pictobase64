@@ -7,8 +7,8 @@ const NODE_ENV = process.env.NODE_ENV
 function createWindow() {
   // 创建浏览器窗口
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 700,
+    width: 700,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },

@@ -44,51 +44,51 @@ export default {
     };
   },
   methods: {
+    // 读取图片，函数运行时间计算
     readImge: function (file) {
       if (!/image\/\w+/.test(file.type)) {
         alert("请确保文件为图像类型");
         return false;
       }
+
+      var preview = document.querySelector('img');
       var reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
+
+      reader.addEventListener("load", function () {
+        // 执行前计时
         var timeStart = Date.now()
-        // this.result里的这个result是FileReader.readAsDataURL()接口当中转换完图片输出的base64结果存放在result当中
+        preview.src = this.result;
         base64_code.innerHTML = this.result;
-        img_area.innerHTML = '<img src="' + this.result + '" alt=""/>';
+        // 执行后计时
         var timeEnd = Date.now()
+        // 计算时间差
         var timeDiff = timeEnd - timeStart
+        // 输出时间差
         console.log("Conversion time: ", timeDiff, " ms");
         time_diff.innerHTML = '<h3 class="timeDiff">转换用时 ' + timeDiff + ' ms</h3><h4 class="timeDiff">Conversion time ' + timeDiff + ' ms</h4>';
+      }, false);
+
+      if (file) {
+        reader.readAsDataURL(file);
       }
+
     },
+    // 打开文件，调用img_upload的click事件
     openFile: function () {
       document.getElementById('img_upload').click();
     },
     tirggerFile: function (event) {
-      // (利用console.log输出看结构就知道如何处理档案资料)
+      // 利用console.log输出看结构就知道如何处理档案资料
       var file = event.target.files[0];
-      if (!/image\/\w+/.test(file.type)) {
-        alert("请确保文件为图像类型");
-        return false;
-      }
-      var reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-        var timeStart = Date.now()
-        // this.result里的这个result是FileReader.readAsDataURL()接口当中转换完图片输出的base64结果存放在result当中
-        base64_code.innerHTML = this.result;
-        img_area.innerHTML = '<img src="' + this.result + '" alt=""/>';
-        var timeEnd = Date.now()
-        var timeDiff = timeEnd - timeStart
-        console.log("Conversion time: ", timeDiff, " ms");
-        time_diff.innerHTML = '<h3 class="timeDiff">转换用时 ' + timeDiff + ' ms</h3><h4>Conversion time ' + timeDiff + ' ms</h4>';
-      }
+      // 调用读取图像函数
+      readImge(file);
     },
+    // Base64解码
     base64Decode: function () {
       var base64Decode = base64_input.innerHTML;
       img_area.innerHTML = '<img src="' + base64Decode + '" alt=""/>';
     },
+    // 复制生成的Base64
     copyCode: function () {
       var copyText = base64_code.innerHTML;
       console.log(copyText);
@@ -124,7 +124,7 @@ export default {
         <h2>图片预览</h2>
         <h3>Preview</h3>
         <hr>
-        <p id="img_area"></p>
+        <p id="img_area"><img src="" alt="Image preview..."></p>
       </div>
     </div>
     <nav>
