@@ -24,10 +24,12 @@ img:not([src]) {
   opacity: 0;
 }
 
+html,
 body {
   height: 100vh;
   margin: 0;
-  background-color: #f3f6f7;
+  background-color: rgba(243, 246, 247, 0);
+  /* background-color: #f3f6f7; */
   -webkit-app-region: drag;
 }
 
@@ -46,15 +48,12 @@ h1 {
 }
 
 h2 {
-  color: #7993a2;
+  color: #566a75;
 }
 
-h3 {
-  color: #abc1c6ce;
-}
-
+h3,
 h4 {
-  color: #abc1c680;
+  color: #798c91;
 }
 
 hr {
@@ -128,7 +127,41 @@ textarea {
 .box,
 #app {
   height: 100%;
+
   margin: 0;
   display: flex;
   flex-direction: column;
+}
+
+#app {
+  height: 99%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-width: 1px;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: rgba(83, 83, 83, 0.2);
+}
+
+#input_button,
+#copy_button,
+#init_button,
+#mini_button,
+#close_button {
+  -webkit-app-region: no-drag;
+}
+
+.bar,
+#mini_button,
+#close_button {
+  background-color: rgba(74, 91, 100, 0);
+  align-self: flex-end;
+}
+
+#mini_button,
+#close_button {
+  color: #000000;
+  border-width: 1px;
+  border-radius: 50px;
+  border-style: solid;
+  border-color: rgb(0, 0, 0);
 }

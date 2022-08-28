@@ -106,12 +106,20 @@ export default {
     InitEditor: function () {
       location.reload()
     },
+    // 关闭页面
+    close: function () {
+      window.close();
+    }
   },
 };
 </script>
 
 <template>
   <div ref="select_frame" class="box">
+    <div class="bar">
+      <input type="button" id="close_button" name="close" value="关闭窗口" onclick="window.close();" />
+      <!-- <el-button id="close_button" type="primary" v-on:click="close()" round>X</el-button> -->
+    </div>
     <h1>Pic To Base64</h1>
     <div class="display">
       <div class="code_div">
@@ -130,7 +138,7 @@ export default {
     <nav>
       <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开文件</el-button>
       <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
-      <el-button id="copy_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
+      <el-button id="init_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
     </nav>
     <p id="time_diff"></p>
