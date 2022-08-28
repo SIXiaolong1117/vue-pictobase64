@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "main": "electron/main.js",
   "scripts": {
-    "dev": "vite --port 3001",
+    "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "electron": "wait-on tcp:3001 && cross-env NODE_ENV=development electron .",
+    "electron": "wait-on tcp:3000 && cross-env NODE_ENV=development electron .",
     "electron:serve": "concurrently -k \"yarn dev\" \"yarn electron\"",
     "electron:build": "vite build && electron-builder"
   },

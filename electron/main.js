@@ -11,15 +11,15 @@ function createWindow() {
     height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      resizable: false,
     },
+    resizable: false,
   })
 
   // 加载 index.html
   // mainWindow.loadFile('dist/index.html') 将该行改为下面这一行，加载url
   mainWindow.loadURL(
     NODE_ENV === 'development'
-      ? 'http://localhost:3001'
+      ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../dist/index.html')}`
   );
 
@@ -35,6 +35,10 @@ function createWindow() {
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
   createWindow()
+
+  // 隐藏菜单栏
+  const { Menu } = require('electron');
+  Menu.setApplicationMenu(null);
 
   app.on('activate', function () {
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
