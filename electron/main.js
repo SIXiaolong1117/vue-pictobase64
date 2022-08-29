@@ -1,21 +1,47 @@
-// 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
+const { BrowserWindow } = require("electron-acrylic-window");
+const { app, shell } = require('electron');
+const os = require('os');
+const path = require('path');
 
 const NODE_ENV = process.env.NODE_ENV
 
+function isVibrancySupported() {
+  // Windows 10 or greater
+  return (
+    process.platform === 'win32' &&
+    parseInt(os.release().split('.')[0]) >= 10
+  )
+}
+
+let mainWindow
 function createWindow() {
+  let vibrancy = 'dark'
+
+  if (isVibrancySupported()) {
+    console.log('Vibrancy Supported')
+    vibrancy = {
+      // theme: '#FFFFFF00',
+      effect: 'acrylic',
+      useCustomWindowRefreshMethod: true,
+      disableOnBlur: true,
+      debug: false,
+    }
+  }
+
   // 创建浏览器窗口
-  const mainWindow = new BrowserWindow({
-    width: 700,
-    height: 600,
-    frame: false, // 无边框窗口
-    transparent: true,
+  mainWindow = new BrowserWindow({
+    width: 600,
+    height: 550,
+    resizable: false,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
     },
-    icon: path.join(__dirname, '../public/icon/icon.ico'),
-    resizable: false,
+    
+    vibrancy: vibrancy,
   })
 
   // 加载 index.html
@@ -31,6 +57,7 @@ function createWindow() {
     mainWindow.webContents.openDevTools()
   }
 
+  mainWindow.show()
 }
 
 // 这段程序将会在 Electron 结束初始化

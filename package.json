@@ -1,6 +1,6 @@
 {
   "name": "vue-pictobase64",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
     "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
+    "electron-acrylic-window": "^0.5.11",
     "element-plus": "^2.2.15",
     "vue": "^3.2.16"
   },
@@ -27,6 +28,9 @@
     "appId": "com.my-website.my-app",
     "productName": "VuePicToBase64",
     "copyright": "Copyright © 2021 vue-vite",
+    "win": {
+      "icon": "icon/icon.ico"
+    },
     "mac": {
       "category": "public.app-category.utilities"
     },
@@ -39,7 +43,7 @@
       "electron/**/*"
     ],
     "directories": {
-      "buildResources": "assets",
+      "buildResources": "src/assets",
       "output": "dist_electron"
     }
   }

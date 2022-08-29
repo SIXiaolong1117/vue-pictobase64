@@ -6,9 +6,9 @@
 
 ## 项目预览
 
-![img](./README/2022-08-28-164756.png)
+![img](./README/2022-08-29-181346.png)
 
-> 背景图像是我的桌面壁纸，现在 Vue-PicToBase64 拥有半透明的背景。
+> Vue-PicToBase64 现在拥有Acrylic效果。依赖：[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)
 
 ## ⬇下载
 
@@ -41,3 +41,7 @@ yarn electron:build
 ## ⚖️License
 
 [MIT license](https://github.com/Direct5dom/vue-PicToBase64/blob/main/LICENSE)
+
+## 依赖
+
+[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)

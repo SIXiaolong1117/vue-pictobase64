@@ -9,7 +9,7 @@ textarea::-webkit-scrollbar {
 /*滚动条里面小方块*/
 textarea::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   background: #ebebeb;
 }
 
@@ -44,16 +44,13 @@ h1 {
   margin: 0;
   padding: 2% 0 0 0;
   text-align: center;
-  color: #4a5b64;
+  color: #8FE3CF
 }
 
-h2 {
-  color: #566a75;
-}
-
+h2,
 h3,
 h4 {
-  color: #798c91;
+  color: #8FE3CF
 }
 
 hr {
@@ -91,7 +88,7 @@ img {
   border-width: 2px;
   border-radius: 8px;
   border-style: solid;
-  border-color: #7993a2;
+  border-color: #256D85;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -127,7 +124,6 @@ textarea {
 .box,
 #app {
   height: 100%;
-
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -135,11 +131,11 @@ textarea {
 
 #app {
   height: 99%;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-width: 1px;
-  border-radius: 8px;
-  border-style: solid;
-  border-color: rgba(83, 83, 83, 0.2);
+  /* background-color: #ffffff00; */
+  /* border-width: 1px; */
+  /* border-radius: 8px; */
+  /* border-style: solid; */
+  /* border-color: rgba(83, 83, 83, 0.2); */
 }
 
 #input_button,
@@ -159,9 +155,9 @@ textarea {
 
 #mini_button,
 #close_button {
-  color: #000000;
+  color: #8FE3CF;
   border-width: 1px;
   border-radius: 50px;
   border-style: solid;
-  border-color: rgb(0, 0, 0);
+  border-color: #8FE3CF;
 }
