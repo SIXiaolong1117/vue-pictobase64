@@ -31,7 +31,7 @@ function createWindow() {
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
     width: 700,
-    height: 600,
+    height: 700,
     resizable: false,
     frame: false,
     webPreferences: {
@@ -40,7 +40,6 @@ function createWindow() {
       enableRemoteModule: true,
       contextIsolation: false,
     },
-    
     vibrancy: vibrancy,
   })
 

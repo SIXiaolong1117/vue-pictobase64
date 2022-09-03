@@ -5,6 +5,7 @@ export default {
     return {
       infoshow: false,
       fileList: [],
+      value: true,
     };
   },
   mounted() {
@@ -97,14 +98,24 @@ export default {
       var copyText = base64_code.innerHTML;
       console.log(copyText);
       var content = document.getElementById('base64_code').innerHTML;
-
-      navigator.clipboard.writeText(content)
-        .then(() => {
-          console.log("Text copied to clipboard...")
-        })
-        .catch(err => {
-          console.log('Something went wrong', err);
-        })
+      if (this.value == true) {
+        navigator.clipboard.writeText('![](' + content + ')')
+          .then(() => {
+            console.log("使用Markdown语法拷贝成功！")
+          })
+          .catch(err => {
+            console.log('出现问题：', err);
+          })
+      }
+      else {
+        navigator.clipboard.writeText(content)
+          .then(() => {
+            console.log("Base64编码复制成功！")
+          })
+          .catch(err => {
+            console.log('出现问题：', err);
+          })
+      }
     },
     // 刷新页面
     InitEditor: function () {
@@ -122,7 +133,6 @@ export default {
   <div ref="select_frame" class="box">
     <div class="bar">
       <input type="button" id="close_button" name="close" value="关闭窗口" onclick="window.close();" />
-      <!-- <el-button id="close_button" type="primary" v-on:click="close()" round>X</el-button> -->
     </div>
     <h1>Pic To Base64</h1>
     <div class="display">
@@ -144,6 +154,10 @@ export default {
       <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
       <el-button id="init_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
+    </nav>
+    <nav>
+      <el-switch id="md_switch" v-model="value" active-color="#13ce66" inactive-color="#ff4949"
+        active-text="使用Makedown语法" inactive-text="关闭Makedown语法"></el-switch>
     </nav>
     <p id="time_diff"></p>
   </div>

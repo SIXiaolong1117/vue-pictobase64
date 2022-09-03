@@ -139,23 +139,28 @@ textarea {
   /* border-color: rgba(83, 83, 83, 0.2); */
 }
 
-#input_button,
+/* #input_button,
 #copy_button,
 #init_button,
 #mini_button,
+#close_button,
+input{
+  -webkit-app-region: no-drag;
+} */
+
+nav,
 #close_button {
   -webkit-app-region: no-drag;
 }
 
-.bar,
-#mini_button,
-#close_button {
-  background-color: rgba(74, 91, 100, 0);
+.bar {
   align-self: flex-end;
+  margin: 8px 8px 0 0;
 }
 
 #mini_button,
 #close_button {
+  background-color: rgba(74, 91, 100, 0);
   color: #8FE3CF;
   border-width: 1px;
   border-radius: 50px;
