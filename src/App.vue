@@ -11,7 +11,7 @@ export default {
   mounted() {
     window.readImge = this.readImge;
     window.copyCode = this.copyCode;
-
+    window.InitEditor = this.InitEditor;
 
     //阻止离开时的浏览器默认行为
     this.$refs.select_frame.ondragleave = (e) => {
@@ -101,7 +101,11 @@ export default {
       if (this.value == true) {
         navigator.clipboard.writeText('![](' + content + ')')
           .then(() => {
-            console.log("使用Markdown语法拷贝成功！")
+            // console.log("使用Markdown语法拷贝成功！")
+            const NOTIFICATION_TITLE = '复制成功'
+            const NOTIFICATION_BODY = '使用Markdown语法复制成功！'
+            const CLICK_MESSAGE = 'Notification clicked!'
+            new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => document.getElementById("output").innerText = CLICK_MESSAGE
           })
           .catch(err => {
             console.log('出现问题：', err);
@@ -110,7 +114,11 @@ export default {
       else {
         navigator.clipboard.writeText(content)
           .then(() => {
-            console.log("Base64编码复制成功！")
+            // console.log("Base64编码复制成功！")
+            const NOTIFICATION_TITLE = '复制成功'
+            const NOTIFICATION_BODY = '复制Base64成功！'
+            const CLICK_MESSAGE = 'Notification clicked!'
+            new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => document.getElementById("output").innerText = CLICK_MESSAGE
           })
           .catch(err => {
             console.log('出现问题：', err);
@@ -119,7 +127,9 @@ export default {
     },
     // 刷新页面
     InitEditor: function () {
-      location.reload()
+      // location.reload()
+      document.querySelector('img').src = '';
+      base64_code.innerHTML = '';
     },
     // 关闭页面
     close: function () {
