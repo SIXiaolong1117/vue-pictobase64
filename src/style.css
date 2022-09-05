@@ -19,6 +19,21 @@ textarea::-webkit-scrollbar-track {
   background: #fff;
 }
 
+:root {
+  --el-color-primary: #8FE3CF;
+  --el-color-primary-light-3: #a9dfd2;
+  --el-color-primary-dark-2: #3a5e55;
+}
+
+.el-button--primary {
+  --el-button-text-color: #000000;
+  --el-button-hover-text-color: #3a5e55;
+}
+
+.el-switch__label {
+  color: #8fe3cf5b;
+}
+
 img[src=''],
 img:not([src]) {
   opacity: 0;
@@ -54,7 +69,10 @@ h4 {
 }
 
 hr {
+  height: 2px;
   margin: 4px 0 4px 0;
+  background-color: #8FE3CF;
+  border: none;
 }
 
 nav {

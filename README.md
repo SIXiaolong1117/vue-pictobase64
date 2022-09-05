@@ -6,9 +6,9 @@
 
 ## 项目预览
 
-![img](./README/2022-09-04-224326.png)
+![img](./README/2022-09-05-183732.png)
 
-> Vue-PicToBase64 现在拥有Acrylic效果。依赖：[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)
+> Vue-PicToBase64 现在拥有更加统一的颜色效果。
 
 ## ⬇下载
 
