@@ -2,8 +2,6 @@
 
 个人的一个 Vue + Electron 的练手项目，可以实现便捷的将图片转换为 Base64 编码形式。
 
-原生 JS + Electron 的版本见：[PicToBase64](https://github.com/Direct5dom/PicToBase64)
-
 ## 项目预览
 
 ![img](./README/2022-09-05-183732.png)
@@ -12,15 +10,15 @@
 
 ## ⬇下载
 
-您可以直接到[Releases · Direct5dom/vue-PicToBase64](https://github.com/Direct5dom/vue-PicToBase64/releases)下载已经打包好的软件。
+您可以直接到[Releases · Direct5dom/vue-pictobase64](https://github.com/Direct5dom/vue-PicToBase64/releases)下载已经打包好的软件。
 
 ## 🛠️构建
 
 想要构建此项目，您需要：
 
 ```sh
-git clone https://github.com/Direct5dom/vue-PicToBase64
-cd vue-PicToBase64
+git clone https://github.com/Direct5dom/vue-pictobase64.git
+cd vue-pictobase64
 yarn
 ```
 
