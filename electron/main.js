@@ -1,9 +1,13 @@
 const { BrowserWindow } = require("electron-acrylic-window");
-const { app, shell } = require('electron');
+const { app, Tray, Menu, nativeImage } = require('electron');
 const os = require('os');
 const path = require('path');
 
 const NODE_ENV = process.env.NODE_ENV
+
+// 全局作用域
+let tray
+let mainWindow
 
 function isVibrancySupported() {
   // Windows 10 or greater
@@ -13,7 +17,6 @@ function isVibrancySupported() {
   )
 }
 
-let mainWindow
 function createWindow() {
   let vibrancy = 'dark'
 
@@ -63,11 +66,27 @@ function createWindow() {
 // 和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
+  // 创建托盘图标
+  const icon = nativeImage.createFromPath('src/assets/icon/icon.png')
+  tray = new Tray(icon)
+
   createWindow()
 
   // 隐藏菜单栏
   const { Menu } = require('electron');
   Menu.setApplicationMenu(null);
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio', checked: true },
+    { label: 'Item4', type: 'radio' }
+  ])
+
+  tray.setContextMenu(contextMenu)
+
+  tray.setToolTip('Pic To Base64')
+  tray.setTitle('Pic To Base64')
 
   app.on('activate', function () {
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
