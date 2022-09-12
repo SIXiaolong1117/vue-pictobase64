@@ -1,5 +1,5 @@
 const { BrowserWindow } = require("electron-acrylic-window");
-const { app, Tray, Menu, nativeImage } = require('electron');
+const { app, shell, Tray, Menu, nativeImage } = require('electron');
 const os = require('os');
 const path = require('path');
 
@@ -77,10 +77,32 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
+    { label: '读取剪贴板' },
+    {
+      label: '打开图片', click: () => {
+        console.log("打开图片");
+        // 打开dialog，选择目录
+        const { dialog } = require('electron')
+        dialog.showOpenDialog({
+          properties: ['openFile'],
+        }).then((data) => {
+          // 获取到文件路径
+          filePath = data.filePaths.toString();
+          console.log("文件路径："+filePath);
+          // 向主进程发送openPicture完成后续功能
+          mainWindow.webContents.send("openPicture", filePath);
+        });
+      }
+    },
+    {
+      type: "separator"
+    },
+    {
+      label: '退出', click: () => {
+        console.log("关闭");
+        mainWindow.close();
+      }
+    }
   ])
 
   tray.setContextMenu(contextMenu)

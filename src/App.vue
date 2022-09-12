@@ -1,4 +1,7 @@
 <script>
+const { ipcRenderer } = require("electron");
+const fs = require('fs')
+
 export default {
   name: 'patchCheck',
   data() {
@@ -12,6 +15,12 @@ export default {
     window.readImge = this.readImge;
     window.copyCode = this.copyCode;
     window.InitEditor = this.InitEditor;
+    window.readFile = this.readFile;
+
+    // 主进程托盘 打开图片
+    ipcRenderer.on("openPicture", (event, data) => {
+      
+    })
 
     //阻止离开时的浏览器默认行为
     this.$refs.select_frame.ondragleave = (e) => {
@@ -33,7 +42,7 @@ export default {
       }
       this.fileList = this.fileList.concat(e.dataTransfer.files[0]);
       // console.log(formData, this.fileList, e.dataTransfer.files[0]);
-      console.log(e.dataTransfer.files[0]);
+      // console.log(e.dataTransfer.files[0]);
       readImge(e.dataTransfer.files[0])
     };
     //阻止拖入时的浏览器默认行为
@@ -49,6 +58,9 @@ export default {
   methods: {
     // 读取图片，函数运行时间计算
     readImge: function (file) {
+
+      // console.log(file)
+
       if (!/image\/\w+/.test(file.type)) {
         alert("请确保文件为图像类型");
         return false;
@@ -58,18 +70,9 @@ export default {
       var reader = new FileReader();
 
       reader.addEventListener("load", function () {
-        // 执行前计时
-        var timeStart = Date.now()
         preview.src = '';
         preview.src = this.result;
         base64_code.innerHTML = this.result;
-        // 执行后计时
-        var timeEnd = Date.now()
-        // 计算时间差
-        var timeDiff = timeEnd - timeStart
-        // 输出时间差
-        console.log("Conversion time: ", timeDiff, " ms");
-        time_diff.innerHTML = '<h3 class="timeDiff">转换用时 ' + timeDiff + ' ms</h3><h4 class="timeDiff">Conversion time ' + timeDiff + ' ms</h4>';
         // 调用拷贝
         copyCode();
       }, false);
@@ -83,6 +86,7 @@ export default {
       document.getElementById('img_upload').click();
     },
     tirggerFile: function (event) {
+      console.log('tirggerFile的event：' + event)
       // 利用console.log输出看结构就知道如何处理档案资料
       var file = event.target.files[0];
       // 调用读取图像函数
@@ -96,7 +100,7 @@ export default {
     // 复制生成的Base64
     copyCode: function () {
       var copyText = base64_code.innerHTML;
-      console.log(copyText);
+      // console.log(copyText);
       var content = document.getElementById('base64_code').innerHTML;
       if (this.value == true) {
         navigator.clipboard.writeText('![](' + content + ')')
@@ -160,7 +164,7 @@ export default {
       </div>
     </div>
     <nav>
-      <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开文件</el-button>
+      <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开图片</el-button>
       <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
       <el-button id="init_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
@@ -169,6 +173,5 @@ export default {
       <el-switch id="md_switch" v-model="value" active-color="#13ce66" inactive-color="#ff4949"
         active-text="使用Makedown语法" inactive-text="关闭Makedown语法"></el-switch>
     </nav>
-    <p id="time_diff"></p>
   </div>
 </template>

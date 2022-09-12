@@ -130,16 +130,6 @@ textarea {
   align-items: center;
 }
 
-#time_diff,
-.timeDiff {
-  margin: 0;
-}
-
-#time_diff {
-  height: 70px;
-  padding: 1% 0 2% 0;
-}
-
 .box,
 #app {
   height: 100%;
