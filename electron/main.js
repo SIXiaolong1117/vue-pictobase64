@@ -1,8 +1,9 @@
 const { BrowserWindow } = require("electron-acrylic-window");
-const { app, shell, Tray, Menu, nativeImage } = require('electron');
+const { app, shell, Tray, Menu, nativeImage, clipboard } = require('electron');
 const os = require('os');
 const path = require('path');
 const NODE_ENV = process.env.NODE_ENV
+// let { clipboard } = require("electron");
 
 // 全局作用域
 let tray
@@ -45,6 +46,13 @@ function createWindow() {
       contextIsolation: false,
     },
     vibrancy: vibrancy,
+  });
+
+  // 主进程监听器
+  const { ipcMain } = require("electron");
+  ipcMain.on("closeFrame", (event, data) => {
+    console.log("收到hide窗口请求");
+    mainWindow.hide();
   })
 
   // 加载 index.html
@@ -86,7 +94,19 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: '读取剪贴板' },
+    {
+      label: '显示主页面', click: () => {
+        console.log("显示主页面");
+        mainWindow.show()
+      }
+    },
+    {
+      label: '隐藏主页面', click: () => {
+        console.log("隐藏主页面");
+        mainWindow.hide()
+      }
+    },
+    { type: "separator" },
     {
       label: '打开图片', click: () => {
         console.log("打开图片");
@@ -103,9 +123,7 @@ app.whenReady().then(() => {
         });
       }
     },
-    {
-      type: "separator"
-    },
+    { type: "separator" },
     {
       label: '退出', click: () => {
         console.log("关闭");

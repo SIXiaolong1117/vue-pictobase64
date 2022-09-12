@@ -8,7 +8,10 @@ export default {
     return {
       infoshow: false,
       fileList: [],
-      value: true,
+      // 复制markdown语法开关
+      mdSwitch: true,
+      // textarea的内容
+      textdata: ''
     };
   },
   mounted() {
@@ -20,7 +23,7 @@ export default {
 
     // 主进程托盘 打开图片
     ipcRenderer.on("openPicture", (event, data) => {
-      let file = readFile(data).then(res => {
+      readFile(data).then(res => {
         console.log(res);
         readImge(res);
       });
@@ -80,31 +83,6 @@ export default {
         xhr.send();
       });
     },
-    // 读取图片，函数运行时间计算
-    readImge: function (file) {
-
-      console.log(file)
-
-      if (!/image\/\w+/.test(file.type)) {
-        alert("请确保文件为图像类型");
-        return false;
-      }
-
-      var preview = document.querySelector('img');
-      var reader = new FileReader();
-
-      reader.addEventListener("load", function () {
-        preview.src = '';
-        preview.src = this.result;
-        base64_code.innerHTML = this.result;
-        // 调用拷贝
-        copyCode();
-      }, false);
-
-      if (file) {
-        reader.readAsDataURL(file);
-      }
-    },
     // 打开文件，调用img_upload的click事件
     openFile: function () {
       document.getElementById('img_upload').click();
@@ -115,52 +93,70 @@ export default {
       // 调用读取图像函数
       readImge(file);
     },
+    // 读取图片，函数运行时间计算
+    readImge: function (file) {
+      // console.log(file)
+      if (!/image\/\w+/.test(file.type)) {
+        alert("请确保文件为图像类型");
+        return false;
+      }
+
+      var preview = document.querySelector('img');
+      var reader = new FileReader();
+      var _that = this
+
+      reader.addEventListener("load", function () {
+        // console.log("结果："+this.result);
+        preview.src = '';
+        preview.src = this.result;
+        _that.textdata = this.result;
+        // 调用拷贝
+        copyCode();
+      }, false);
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    },
     // Base64解码
     base64Decode: function () {
-      var base64Decode = base64_input.innerHTML;
+      // var base64Decode = base64_input.innerHTML;
+      var base64Decode = this.textdata;
       img_area.innerHTML = '<img src="' + base64Decode + '" alt=""/>';
     },
     // 复制生成的Base64
     copyCode: function () {
-      var copyText = base64_code.innerHTML;
-      // console.log(copyText);
-      var content = document.getElementById('base64_code').innerHTML;
+      var content = this.textdata;
+      const NOTIFICATION_TITLE = '复制成功'
+      var NOTIFICATION_BODY = ''
+      const CLICK_MESSAGE = 'Notification clicked!'
       if (this.value == true) {
-        navigator.clipboard.writeText('![](' + content + ')')
-          .then(() => {
-            // console.log("使用Markdown语法拷贝成功！")
-            const NOTIFICATION_TITLE = '复制成功'
-            const NOTIFICATION_BODY = '使用Markdown语法复制成功！'
-            const CLICK_MESSAGE = 'Notification clicked!'
-            new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => document.getElementById("output").innerText = CLICK_MESSAGE
-          })
-          .catch(err => {
-            console.log('出现问题：', err);
-          })
+        content = '![](' + content + ')';
+        NOTIFICATION_BODY = '复制Markdown语法成功！'
       }
       else {
-        navigator.clipboard.writeText(content)
-          .then(() => {
-            // console.log("Base64编码复制成功！")
-            const NOTIFICATION_TITLE = '复制成功'
-            const NOTIFICATION_BODY = '复制Base64成功！'
-            const CLICK_MESSAGE = 'Notification clicked!'
-            new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => document.getElementById("output").innerText = CLICK_MESSAGE
-          })
-          .catch(err => {
-            console.log('出现问题：', err);
-          })
+        content = this.textdata;
+        NOTIFICATION_BODY = '复制Base64成功！'
       }
+      navigator.clipboard.writeText(content)
+        .then(() => {
+          // console.log("使用Markdown语法拷贝成功！")
+          new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => this.textdata = CLICK_MESSAGE
+        })
+        .catch(err => {
+          console.log('出现问题：', err);
+        })
     },
-    // 刷新页面
-    InitEditor: function () {
-      // location.reload()
-      document.querySelector('img').src = '';
-      base64_code.innerHTML = '';
+    // 清空内容
+    InitWindow: function () {
+      location.reload()
+      // document.querySelector('img').src = '';
+      // this.textdata = '';
     },
     // 关闭页面
-    close: function () {
-      window.close();
+    closeFrame: function () {
+      // window.close();
+      ipcRenderer.send("closeFrame");
     }
   },
 };
@@ -169,7 +165,7 @@ export default {
 <template>
   <div ref="select_frame" class="box">
     <div class="bar">
-      <input type="button" id="close_button" name="close" value="关闭窗口" onclick="window.close();" />
+      <input type="button" id="close_button" name="close" value="关闭窗口" v-on:click="closeFrame()" />
     </div>
     <h1>Pic To Base64</h1>
     <div class="display">
@@ -177,7 +173,7 @@ export default {
         <h2>BASE64</h2>
         <h3>Base64</h3>
         <hr>
-        <textarea id="base64_code"></textarea>
+        <textarea id="base64_code" v-model="textdata"></textarea>
       </div>
       <div class="img_div">
         <h2>图片预览</h2>
@@ -188,12 +184,13 @@ export default {
     </div>
     <nav>
       <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开图片</el-button>
+      <el-button id="input_button" type="primary" v-on:click="base64Decode()" round>解码 Base64</el-button>
       <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
-      <el-button id="init_button" type="primary" v-on:click="InitEditor()" round>清空内容</el-button>
+      <el-button id="init_button" type="primary" v-on:click="InitWindow()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
     </nav>
     <nav>
-      <el-switch id="md_switch" v-model="value" active-color="#13ce66" inactive-color="#ff4949"
+      <el-switch id="md_switch" v-model="mdSwitch" active-color="#13ce66" inactive-color="#ff4949"
         active-text="使用Makedown语法" inactive-text="关闭Makedown语法"></el-switch>
     </nav>
   </div>
