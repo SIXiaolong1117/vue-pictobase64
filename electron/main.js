@@ -2,7 +2,6 @@ const { BrowserWindow } = require("electron-acrylic-window");
 const { app, shell, Tray, Menu, nativeImage } = require('electron');
 const os = require('os');
 const path = require('path');
-
 const NODE_ENV = process.env.NODE_ENV
 
 // 全局作用域
@@ -33,11 +32,13 @@ function createWindow() {
 
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
-    width: 700,
-    height: 700,
+    width: 600,
+    height: 600,
     resizable: false,
     frame: false,
     webPreferences: {
+      // 关闭网站安全检查
+      webSecurity: false,
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -67,8 +68,16 @@ function createWindow() {
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
   // 创建托盘图标
-  const icon = nativeImage.createFromPath('src/assets/icon/icon.png')
-  tray = new Tray(icon)
+  let imgPath
+  if (NODE_ENV === "development") {
+    imgPath = "./src/assets/icon/icon.png";
+  }
+  else {
+    imgPath = path.join(process.resourcesPath, "icon.png");
+  }
+  tray = new Tray(imgPath);
+  // const icon = nativeImage.createFromPath('src/assets/icon/icon.png')
+  // tray = new Tray(icon)
 
   createWindow()
 
@@ -88,7 +97,7 @@ app.whenReady().then(() => {
         }).then((data) => {
           // 获取到文件路径
           filePath = data.filePaths.toString();
-          console.log("文件路径："+filePath);
+          console.log("文件路径：" + filePath);
           // 向主进程发送openPicture完成后续功能
           mainWindow.webContents.send("openPicture", filePath);
         });

@@ -12,6 +12,7 @@ export default {
     };
   },
   mounted() {
+    window.readFile = this.readFile;
     window.readImge = this.readImge;
     window.copyCode = this.copyCode;
     window.InitEditor = this.InitEditor;
@@ -19,7 +20,10 @@ export default {
 
     // 主进程托盘 打开图片
     ipcRenderer.on("openPicture", (event, data) => {
-      
+      let file = readFile(data).then(res => {
+        console.log(res);
+        readImge(res);
+      });
     })
 
     //阻止离开时的浏览器默认行为
@@ -56,10 +60,30 @@ export default {
     };
   },
   methods: {
+    // readFile
+    readFile(filePath) {
+      return new Promise((resolve, reject) => {
+        var blob = null;
+        var xhr = new XMLHttpRequest();
+        var imageName = 'newImage'
+        xhr.open("GET", filePath);
+        xhr.setRequestHeader('Accept', 'image/jpeg');
+        xhr.responseType = "blob";
+        xhr.onload = () => {
+          blob = xhr.response;
+          let imgFile = new File([blob], imageName, { type: 'image/jpeg' });
+          resolve(imgFile);
+        };
+        xhr.onerror = (e) => {
+          reject(e)
+        };
+        xhr.send();
+      });
+    },
     // 读取图片，函数运行时间计算
     readImge: function (file) {
 
-      // console.log(file)
+      console.log(file)
 
       if (!/image\/\w+/.test(file.type)) {
         alert("请确保文件为图像类型");
@@ -86,7 +110,6 @@ export default {
       document.getElementById('img_upload').click();
     },
     tirggerFile: function (event) {
-      console.log('tirggerFile的event：' + event)
       // 利用console.log输出看结构就知道如何处理档案资料
       var file = event.target.files[0];
       // 调用读取图像函数

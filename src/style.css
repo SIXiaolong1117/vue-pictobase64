@@ -57,7 +57,7 @@ h4 {
 
 h1 {
   margin: 0;
-  padding: 2% 0 0 0;
+  padding: 0 0 0 0;
   text-align: center;
   color: #8FE3CF
 }
@@ -156,14 +156,14 @@ input{
   -webkit-app-region: no-drag;
 } */
 
-nav,
-#close_button {
-  -webkit-app-region: no-drag;
-}
-
 .bar {
   align-self: flex-end;
   margin: 8px 8px 0 0;
+}
+
+nav,
+#close_button {
+  -webkit-app-region: no-drag;
 }
 
 #mini_button,
