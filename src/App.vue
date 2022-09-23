@@ -130,7 +130,7 @@ export default {
       const NOTIFICATION_TITLE = '复制成功'
       var NOTIFICATION_BODY = ''
       const CLICK_MESSAGE = 'Notification clicked!'
-      if (this.value == true) {
+      if (this.mdSwitch == true) {
         content = '![](' + content + ')';
         NOTIFICATION_BODY = '复制Markdown语法成功！'
       }

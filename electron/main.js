@@ -137,6 +137,12 @@ app.whenReady().then(() => {
   tray.setToolTip('Pic To Base64')
   tray.setTitle('Pic To Base64')
 
+  // 任务栏图标双击托盘打开应用
+  tray.on('double-click', function () {
+    console.log("显示窗口");
+    mainWindow.show();
+  });
+
   app.on('activate', function () {
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
     // 打开的窗口，那么程序会重新创建一个窗口。
