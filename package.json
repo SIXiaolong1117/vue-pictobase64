@@ -17,12 +17,12 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",
-    "concurrently": "^7.3.0",
+    "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
-    "electron": "^20.1.0",
-    "electron-builder": "^23.3.3",
+    "electron": "^23.0.0",
+    "electron-builder": "^23.6.0",
     "vite": "^2.6.4",
-    "wait-on": "^6.0.1"
+    "wait-on": "^7.0.1"
   },
   "build": {
     "appId": "com.my-website.my-app",

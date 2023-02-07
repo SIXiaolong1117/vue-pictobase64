@@ -4,7 +4,7 @@
 
 ## 项目预览
 
-![img](./README/2022-09-21-114416.png)
+<img src="./README/2022-09-21-114416.png" alt="img" style="zoom:50%;" />
 
 ## ⬇下载
 
@@ -20,7 +20,11 @@ cd vue-pictobase64
 yarn
 ```
 
-运行
+> 此外，本项目使用了 [electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)，需要 `msvc` 的支持。您需要安装 Visual Studio，并安装“使用 C++ 的桌面开发”。
+> 
+> 在非 Windows 10/11 的PC上，您可以忽略这一点。
+
+运行：
 
 ```sh
 yarn electron:serve

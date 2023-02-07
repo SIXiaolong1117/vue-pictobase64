@@ -9,6 +9,7 @@ lerna-debug.log*
 
 .vscode
 .yarnrc
+.npmrc
 
 node_modules
 dist
