@@ -21,7 +21,6 @@ function createWindow() {
   let vibrancy = 'dark'
 
   if (isVibrancySupported()) {
-    console.log('Vibrancy Supported')
     vibrancy = {
       // theme: '#FFFFFF00',
       effect: 'acrylic',
@@ -51,7 +50,6 @@ function createWindow() {
   // 主进程监听器
   const { ipcMain } = require("electron");
   ipcMain.on("closeFrame", (event, data) => {
-    console.log("收到hide窗口请求");
     mainWindow.hide();
   })
 
@@ -96,20 +94,17 @@ app.whenReady().then(() => {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '显示主页面', click: () => {
-        console.log("显示主页面");
         mainWindow.show()
       }
     },
     {
       label: '隐藏主页面', click: () => {
-        console.log("隐藏主页面");
         mainWindow.hide()
       }
     },
     { type: "separator" },
     {
       label: '打开图片', click: () => {
-        console.log("打开图片");
         // 打开dialog，选择目录
         const { dialog } = require('electron')
         dialog.showOpenDialog({
@@ -117,7 +112,6 @@ app.whenReady().then(() => {
         }).then((data) => {
           // 获取到文件路径
           filePath = data.filePaths.toString();
-          console.log("文件路径：" + filePath);
           // 向主进程发送openPicture完成后续功能
           mainWindow.webContents.send("openPicture", filePath);
         });
@@ -126,7 +120,6 @@ app.whenReady().then(() => {
     { type: "separator" },
     {
       label: '退出', click: () => {
-        console.log("关闭");
         mainWindow.close();
       }
     }
@@ -139,7 +132,6 @@ app.whenReady().then(() => {
 
   // 任务栏图标双击托盘打开应用
   tray.on('double-click', function () {
-    console.log("显示窗口");
     mainWindow.show();
   });
 

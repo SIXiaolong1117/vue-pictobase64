@@ -24,7 +24,6 @@ export default {
     // 主进程托盘 打开图片
     ipcRenderer.on("openPicture", (event, data) => {
       readFile(data).then(res => {
-        console.log(res);
         readImge(res);
       });
     })
@@ -42,14 +41,11 @@ export default {
       if (data.length < 1) {
         return;
       }
-      // console.log('1'+e.dataTransfer.files);
       const formData = new FormData();
       for (let i = 0; i < e.dataTransfer.files.length; i++) {
         formData.append('uploadfile', e.dataTransfer.files[i], e.dataTransfer.files[i].name);
       }
       this.fileList = this.fileList.concat(e.dataTransfer.files[0]);
-      // console.log(formData, this.fileList, e.dataTransfer.files[0]);
-      // console.log(e.dataTransfer.files[0]);
       readImge(e.dataTransfer.files[0])
     };
     //阻止拖入时的浏览器默认行为
@@ -95,7 +91,6 @@ export default {
     },
     // 读取图片，函数运行时间计算
     readImge: function (file) {
-      // console.log(file)
       if (!/image\/\w+/.test(file.type)) {
         alert("请确保文件为图像类型");
         return false;
@@ -106,7 +101,6 @@ export default {
       var _that = this
 
       reader.addEventListener("load", function () {
-        // console.log("结果："+this.result);
         preview.src = '';
         preview.src = this.result;
         _that.textdata = this.result;
@@ -140,7 +134,6 @@ export default {
       }
       navigator.clipboard.writeText(content)
         .then(() => {
-          // console.log("使用Markdown语法拷贝成功！")
           new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => this.textdata = CLICK_MESSAGE
         })
         .catch(err => {
@@ -150,12 +143,9 @@ export default {
     // 清空内容
     InitWindow: function () {
       location.reload()
-      // document.querySelector('img').src = '';
-      // this.textdata = '';
     },
     // 关闭页面
     closeFrame: function () {
-      // window.close();
       ipcRenderer.send("closeFrame");
     }
   },
