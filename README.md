@@ -2,11 +2,11 @@
   <h1 align="center">图片转 Base64（Pic to Base64）</h1>
   <p align="center">一个基于 Vue 的图片转 Base64 客户端。</p>
   <p align="center">
-    <a href="https://github.com/Direct5dom/vue-pictobase64/blob/master/LICENSE">
-      <img src="https://img.shields.io/github/license/Direct5dom/vue-pictobase64"/>
+    <a href="https://github.com/SIXiaolong1117/vue-pictobase64/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/SIXiaolong1117/vue-pictobase64"/>
     </a>
-    <a href="https://github.com/Direct5dom/vue-pictobase64/releases">
-      <img src="https://img.shields.io/github/v/release/Direct5dom/vue-pictobase64?display_name=tag"/>
+    <a href="https://github.com/SIXiaolong1117/vue-pictobase64/releases">
+      <img src="https://img.shields.io/github/v/release/SIXiaolong1117/vue-pictobase64?display_name=tag"/>
     </a>
   </p>
   <p align="center">
@@ -27,14 +27,14 @@
 
 ### 从 Releases 获取
 
-您可以直接到[Releases · Direct5dom/vue-pictobase64](https://github.com/Direct5dom/vue-PicToBase64/releases)下载已经打包好的软件。
+您可以直接到[Releases · SIXiaolong1117/vue-pictobase64](https://github.com/SIXiaolong1117/vue-PicToBase64/releases)下载已经打包好的软件。
 
 ## 🛠️构建/Build
 
 想要构建此项目，您需要：
 
 ```sh
-git clone https://github.com/Direct5dom/vue-pictobase64.git
+git clone https://github.com/SIXiaolong1117/vue-pictobase64.git
 cd vue-pictobase64
 yarn
 ```
@@ -59,7 +59,7 @@ yarn electron:build
 
 ## ⚖️License
 
-[MIT license](https://github.com/Direct5dom/vue-PicToBase64/blob/main/LICENSE)
+[MIT license](https://github.com/SIXiaolong1117/vue-PicToBase64/blob/main/LICENSE)
 
 ## 依赖/Dependencies
 
