@@ -25,7 +25,7 @@
     "wait-on": "^8.0.2"
   },
   "build": {
-    "appId": "com.my-website.my-app",
+    "appId": "win.sixiaolong.vuepic2base64",
     "productName": "VuePicToBase64",
     "win": {
       "icon": "icon/icon.ico"
