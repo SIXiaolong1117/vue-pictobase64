@@ -1,5 +1,4 @@
-const { BrowserWindow } = require("electron-acrylic-window");
-const { app, shell, Tray, Menu, nativeImage, clipboard } = require('electron');
+const { app, shell, Tray, Menu, nativeImage, clipboard, BrowserWindow } = require('electron');
 const os = require('os');
 const path = require('path');
 const NODE_ENV = process.env.NODE_ENV
@@ -9,33 +8,14 @@ const NODE_ENV = process.env.NODE_ENV
 let tray
 let mainWindow
 
-function isVibrancySupported() {
-  // Windows 10 or greater
-  return (
-    process.platform === 'win32' &&
-    parseInt(os.release().split('.')[0]) >= 10
-  )
-}
-
 function createWindow() {
-  let vibrancy = 'dark'
-
-  if (isVibrancySupported()) {
-    vibrancy = {
-      // theme: '#FFFFFF00',
-      effect: 'acrylic',
-      useCustomWindowRefreshMethod: true,
-      disableOnBlur: true,
-      debug: false,
-    }
-  }
-
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
-    width: 500,
-    height: 500,
+    width: 600,
+    height: 600,
     resizable: false,
-    frame: false,
+    frame: false, // 窗口框架
+    transparent: true,  // 窗口背景透明
     webPreferences: {
       // 关闭网站安全检查
       webSecurity: false,
@@ -44,14 +24,17 @@ function createWindow() {
       enableRemoteModule: true,
       contextIsolation: false,
     },
-    vibrancy: vibrancy,
   });
 
   // 主进程监听器
   const { ipcMain } = require("electron");
+
   ipcMain.on("closeFrame", (event, data) => {
     mainWindow.hide();
   })
+  ipcMain.on("minimizeFrame", (event, data) => {
+    mainWindow.minimize();  // 最小化窗口
+  });
 
   // 加载 index.html
   // mainWindow.loadFile('dist/index.html') 将该行改为下面这一行，加载url
@@ -63,9 +46,10 @@ function createWindow() {
 
   // 打开开发工具
   if (NODE_ENV === "development") {
-    mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
+  mainWindow.setBackgroundMaterial("acrylic");
   mainWindow.show()
 }
 
@@ -131,7 +115,8 @@ app.whenReady().then(() => {
   tray.setTitle('Pic To Base64')
 
   // 任务栏图标双击托盘打开应用
-  tray.on('double-click', function () {
+  tray.on('click', function () {
+    mainWindow.setBackgroundMaterial("acrylic");
     mainWindow.show();
   });
 

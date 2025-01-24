@@ -1,6 +1,6 @@
 {
   "name": "vue-pictobase64",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -11,18 +11,18 @@
     "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
-    "electron-acrylic-window": "^0.5.11",
-    "element-plus": "^2.4.4",
-    "vue": "^3.3.13"
+    "element-plus": "^2.9.3",
+    "font-awesome": "^4.7.0",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
-    "concurrently": "^8.2.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
-    "electron": "^28.1.0",
-    "electron-builder": "^24.9.1",
-    "vite": "^5.0.10",
-    "wait-on": "^7.2.0"
+    "electron": "^34.0.1",
+    "electron-builder": "^25.1.8",
+    "vite": "^6.0.11",
+    "wait-on": "^8.0.2"
   },
   "build": {
     "appId": "com.my-website.my-app",

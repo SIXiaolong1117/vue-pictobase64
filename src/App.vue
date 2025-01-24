@@ -1,3 +1,7 @@
+<script setup>
+import TitleBar from './components/TitleBar.vue'
+</script>
+
 <script>
 const { ipcRenderer } = require("electron");
 const fs = require('fs')
@@ -147,6 +151,10 @@ export default {
     // 关闭页面
     closeFrame: function () {
       ipcRenderer.send("closeFrame");
+    },
+    // 最小化窗口
+    minimizeFrame: function () {
+      ipcRenderer.send("minimizeFrame");
     }
   },
 };
@@ -154,33 +162,34 @@ export default {
 
 <template>
   <div ref="select_frame" class="box">
-    <div class="bar">
-      <input type="button" id="close_button" name="close" value="关闭窗口" v-on:click="closeFrame()" />
-    </div>
-    <h1>Pic To Base64</h1>
+    <TitleBar />
     <div class="display">
-      <div class="code_div">
-        <h2>BASE64</h2>
-        <h3>Base64</h3>
+      <div class="code-div">
+        <div class="head-text">
+          <h2>𝔹𝔸𝕊𝔼𝟞𝟜</h2>
+          <h3>Base64</h3>
+        </div>
         <hr>
         <textarea id="base64_code" v-model="textdata"></textarea>
       </div>
-      <div class="img_div">
-        <h2>图片预览</h2>
-        <h3>Preview</h3>
+      <div class="img-div">
+        <div class="head-text">
+          <h2>图片预览</h2>
+          <h3>Preview</h3>
+        </div>
         <hr>
         <p id="img_area"><img src="" alt="Image preview..."></p>
       </div>
     </div>
     <nav>
-      <el-button id="input_button" type="primary" v-on:click="openFile()" round>打开图片</el-button>
-      <el-button id="input_button" type="primary" v-on:click="base64Decode()" round>解码 Base64</el-button>
-      <el-button id="copy_button" type="primary" v-on:click="copyCode()" round>复制 Base64</el-button>
-      <el-button id="init_button" type="primary" v-on:click="InitWindow()" round>清空内容</el-button>
+      <el-button id="input_button" v-on:click="openFile()" round>打开图片</el-button>
+      <el-button id="input_button" v-on:click="base64Decode()" round>解码 Base64</el-button>
+      <el-button id="copy_button" v-on:click="copyCode()" round>复制 Base64</el-button>
+      <el-button id="init_button" v-on:click="InitWindow()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
     </nav>
     <nav>
-      <el-switch id="md_switch" v-model="mdSwitch" active-color="#13ce66" inactive-color="#ff4949"
+      <el-switch id="md_switch" v-model="mdSwitch" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
         active-text="使用Makedown语法" inactive-text="关闭Makedown语法"></el-switch>
     </nav>
   </div>

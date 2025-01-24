@@ -16,7 +16,7 @@
   </p>
 </p>
 <p align="center">
-    <img src="./README/2022-09-21-114416.png" width="50%"/>
+    <img src="./README/01.png" width="50%"/>
 </p>
 
 ## ⬇下载/Download
@@ -29,7 +29,7 @@
 
 您可以直接到[Releases · SIXiaolong1117/vue-pictobase64](https://github.com/SIXiaolong1117/vue-PicToBase64/releases)下载已经打包好的软件。
 
-## 🛠️构建/Build
+## 🛠️获取源码/Source Code
 
 想要构建此项目，您需要：
 
@@ -39,9 +39,9 @@ cd vue-pictobase64
 yarn
 ```
 
-> 此外，本项目使用了 [electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)，需要 `msvc` 的支持。您需要安装 Visual Studio，并安装“使用 C++ 的桌面开发”。
+<!-- > 此外，本项目使用了 [electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)，需要 `msvc` 的支持。您需要安装 Visual Studio，并安装“使用 C++ 的桌面开发”。
 > 
-> 在非 Windows 10/11 的PC上，您可以忽略这一点。
+> 在非 Windows 10/11 的PC上，您可以忽略这一点。 -->
 
 运行：
 
@@ -49,9 +49,7 @@ yarn
 yarn electron:serve
 ```
 
-## 📦︎打包/Package
-
-想要打包此项目，您需要在项目根目录运行：
+打包：
 
 ```sh
 yarn electron:build
@@ -61,6 +59,6 @@ yarn electron:build
 
 [MIT license](https://github.com/SIXiaolong1117/vue-PicToBase64/blob/main/LICENSE)
 
-## 依赖/Dependencies
+<!-- ## 依赖/Dependencies
 
-[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)
+[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window) -->
