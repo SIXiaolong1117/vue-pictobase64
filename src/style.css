@@ -122,8 +122,8 @@ img {
 
 textarea {
   padding: 0;
-  color: rgb(138, 177, 168);
-  overflow-x: hidden
+  color: rgba(255, 255, 255, 0.5);
+  overflow-x: hidden;
 }
 
 .display {
