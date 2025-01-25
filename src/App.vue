@@ -63,6 +63,11 @@ export default {
     };
   },
   methods: {
+    async getStoreValue(key) {
+      const value = await ipcRenderer.invoke('get-store', key);
+      console.log(`Value for "${key}":`, value);
+      return value;
+    },
     // readFile
     readFile(filePath) {
       return new Promise((resolve, reject) => {
@@ -104,12 +109,15 @@ export default {
       var reader = new FileReader();
       var _that = this
 
-      reader.addEventListener("load", function () {
+      reader.addEventListener("load", async function () {
         preview.src = '';
         preview.src = this.result;
         _that.textdata = this.result;
-        // 调用拷贝
-        copyCode();
+
+        const minimizeToTray = await _that.getStoreValue('autoCopy');
+        if (minimizeToTray === true) {
+          copyCode();
+        }
       }, false);
 
       if (file) {
@@ -123,12 +131,13 @@ export default {
       img_area.innerHTML = '<img src="' + base64Decode + '" alt=""/>';
     },
     // 复制生成的Base64
-    copyCode: function () {
+    copyCode: async function () {
       var content = this.textdata;
       const NOTIFICATION_TITLE = '复制成功'
       var NOTIFICATION_BODY = ''
       const CLICK_MESSAGE = 'Notification clicked!'
-      if (this.mdSwitch == true) {
+      const useMarkdown = await this.getStoreValue('useMarkdown');
+      if (useMarkdown === true) {
         content = '![](' + content + ')';
         NOTIFICATION_BODY = '复制Markdown语法成功！'
       }
@@ -188,9 +197,9 @@ export default {
       <el-button id="init_button" v-on:click="InitWindow()" round>清空内容</el-button>
       <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
     </nav>
-    <nav>
+    <!-- <nav>
       <el-switch id="md_switch" v-model="mdSwitch" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
         active-text="使用Makedown语法" inactive-text="关闭Makedown语法"></el-switch>
-    </nav>
+    </nav> -->
   </div>
 </template>

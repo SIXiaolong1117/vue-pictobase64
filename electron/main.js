@@ -1,24 +1,28 @@
-const { app, shell, Tray, Menu, nativeImage, clipboard, BrowserWindow } = require('electron');
-const os = require('os');
-const path = require('path');
-const NODE_ENV = process.env.NODE_ENV
-// let { clipboard } = require("electron");
+import { app, shell, Tray, Menu, nativeImage, clipboard, BrowserWindow, ipcMain, dialog } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Store from 'electron-store';
+
+// 模拟 __dirname 和 __filename
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const store = new Store();
+const NODE_ENV = process.env.NODE_ENV;
 
 // 全局作用域
-let tray
-let mainWindow
+let tray;
+let mainWindow;
 
+// 创建窗口
 function createWindow() {
-  // 创建浏览器窗口
   mainWindow = new BrowserWindow({
     width: 600,
     height: 600,
     resizable: false,
     frame: false, // 窗口框架
-    transparent: true,  // 窗口背景透明
+    transparent: true, // 窗口背景透明
     webPreferences: {
-      // 关闭网站安全检查
-      webSecurity: false,
+      webSecurity: false, // 关闭网站安全检查
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -26,112 +30,149 @@ function createWindow() {
     },
   });
 
-  // 主进程监听器
-  const { ipcMain } = require("electron");
-
-  ipcMain.on("closeFrame", (event, data) => {
-    mainWindow.hide();
-  })
-  ipcMain.on("minimizeFrame", (event, data) => {
-    mainWindow.minimize();  // 最小化窗口
+  // IPC 主进程事件
+  ipcMain.on('closeFrame', () => {
+    console.log("关闭应用");
+    app.quit();
   });
 
-  // 加载 index.html
-  // mainWindow.loadFile('dist/index.html') 将该行改为下面这一行，加载url
+  ipcMain.on('minimizeToTray', () => {
+    console.log("最小化到托盘");
+    mainWindow.hide();
+  });
+
+  ipcMain.on('minimizeFrame', () => {
+    mainWindow.minimize();
+  });
+
+  // 获取存储内容
+  ipcMain.handle('get-store', async (event, key) => {
+    try {
+      const value = store.get(key, false); // 添加默认值 false
+      if (value === undefined) {
+        console.warn(`Key "${key}" not found in store. Returning default value.`);
+      }
+      return value;
+    } catch (error) {
+      console.error(`Error in get-store: ${error.message}`);
+      return false; // 出现错误时返回默认值 false
+    }
+  });
+
+
+  // 设置存储内容
+  ipcMain.handle('set-store', async (event, key, value) => {
+    try {
+      console.log(`Setting ${key} to ${value}`);
+      store.set(key, value);
+      return true; // 成功
+    } catch (error) {
+      console.error(`Error in set-store: ${error.message}`);
+      return false; // 存储失败
+    }
+  });
+
+
+  // 删除存储内容
+  ipcMain.handle('delete-store', async (event, key) => {
+    try {
+      const success = store.delete(key);
+      if (success) {
+        console.log(`Deleted key: ${key}`);
+        return true; // 删除成功
+      } else {
+        console.warn(`Key "${key}" not found to delete.`);
+        return false; // 删除失败
+      }
+    } catch (error) {
+      console.error(`Error in delete-store: ${error.message}`);
+      return false; // 删除失败
+    }
+  });
+
+  // 加载 URL
   mainWindow.loadURL(
     NODE_ENV === 'development'
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../dist/index.html')}`
   );
 
-  // 打开开发工具
-  if (NODE_ENV === "development") {
+  // 打开开发工具（仅限开发环境）
+  if (NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
-  mainWindow.setBackgroundMaterial("acrylic");
-  mainWindow.show()
+  mainWindow.setBackgroundMaterial('acrylic');
+  mainWindow.show();
 }
 
-// 这段程序将会在 Electron 结束初始化
-// 和创建浏览器窗口的时候调用
-// 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
-  // 创建托盘图标
-  let imgPath
-  if (NODE_ENV === "development") {
-    imgPath = "./src/assets/icon/icon.png";
-  }
-  else {
-    imgPath = path.join(process.resourcesPath, "icon.png");
-  }
-  tray = new Tray(imgPath);
-  // const icon = nativeImage.createFromPath('src/assets/icon/icon.png')
-  // tray = new Tray(icon)
+  // 托盘图标路径
+  const imgPath =
+    NODE_ENV === 'development'
+      ? './src/assets/icon/icon.png'
+      : path.join(process.resourcesPath, 'icon.png');
 
-  createWindow()
+  tray = new Tray(imgPath);
+
+  createWindow();
 
   // 隐藏菜单栏
-  const { Menu } = require('electron');
   Menu.setApplicationMenu(null);
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: '显示主页面', click: () => {
-        mainWindow.show()
-      }
+      label: '显示主页面',
+      click: () => {
+        mainWindow.show();
+      },
     },
     {
-      label: '隐藏主页面', click: () => {
-        mainWindow.hide()
-      }
+      label: '隐藏主页面',
+      click: () => {
+        mainWindow.hide();
+      },
     },
-    { type: "separator" },
+    { type: 'separator' },
     {
-      label: '打开图片', click: () => {
-        // 打开dialog，选择目录
-        const { dialog } = require('electron')
-        dialog.showOpenDialog({
-          properties: ['openFile'],
-        }).then((data) => {
-          // 获取到文件路径
-          filePath = data.filePaths.toString();
-          // 向主进程发送openPicture完成后续功能
-          mainWindow.webContents.send("openPicture", filePath);
-        });
-      }
+      label: '打开图片',
+      click: () => {
+        dialog
+          .showOpenDialog({
+            properties: ['openFile'],
+          })
+          .then((data) => {
+            const filePath = data.filePaths.toString();
+            mainWindow.webContents.send('openPicture', filePath);
+          });
+      },
     },
-    { type: "separator" },
+    { type: 'separator' },
     {
-      label: '退出', click: () => {
+      label: '退出',
+      click: () => {
         mainWindow.close();
-      }
-    }
-  ])
+      },
+    },
+  ]);
 
-  tray.setContextMenu(contextMenu)
+  tray.setContextMenu(contextMenu);
 
-  tray.setToolTip('Pic To Base64')
-  tray.setTitle('Pic To Base64')
+  tray.setToolTip('Pic To Base64');
+  tray.setTitle('Pic To Base64');
 
-  // 任务栏图标双击托盘打开应用
-  tray.on('click', function () {
-    mainWindow.setBackgroundMaterial("acrylic");
+  // 双击托盘图标打开应用
+  tray.on('click', () => {
+    mainWindow.setBackgroundMaterial('acrylic');
     mainWindow.show();
   });
 
-  app.on('activate', function () {
-    // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
-    // 打开的窗口，那么程序会重新创建一个窗口。
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
 
-// 除了 macOS 外，当所有窗口都被关闭的时候退出程序。 因此，通常对程序和它们在
-// 任务栏上的图标来说，应当保持活跃状态，直到用户使用 Cmd + Q 退出。
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
-
-// 在这个文件中，你可以包含应用程序剩余的所有部分的代码，
-// 也可以拆分成几个文件，然后用 require 导入。
+// 关闭所有窗口时退出应用（除 macOS）
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});

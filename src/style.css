@@ -21,6 +21,7 @@ textarea::-webkit-scrollbar-track {
 
 :root {
   --el-color-primary: #ffffff;
+  --el-bg-color: rgba(0, 0, 0, 0.8);
   /* --el-color-primary-light-3: #a9dfd2;
   --el-color-primary-dark-2: #3a5e55; */
 }
@@ -30,8 +31,8 @@ textarea::-webkit-scrollbar-track {
   /* --el-button-hover-text-color: #3a5e55; */
 }
 
-.el-switch__label {
-  color: rgba(255, 255, 255, 0.3);
+.el-dialog {
+  border-radius: 8px;
 }
 
 img[src=''],

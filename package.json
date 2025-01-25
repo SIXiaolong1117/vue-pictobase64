@@ -2,6 +2,7 @@
   "name": "vue-pictobase64",
   "version": "0.2.0",
   "main": "electron/main.js",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,6 +12,11 @@
     "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "electron-store": "^10.0.0",
     "element-plus": "^2.9.3",
     "font-awesome": "^4.7.0",
     "vue": "^3.5.13"

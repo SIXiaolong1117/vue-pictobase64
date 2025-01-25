@@ -2,9 +2,58 @@
 const { ipcRenderer } = require("electron");
 import { ref } from 'vue';
 
+// 设置项变量
+const minimizeToTray = ref(false);
+const autoCopy = ref(false);
+const useMarkdown = ref(false);
+
+// 初始化变量
+async function initializeSettings() {
+    minimizeToTray.value = await getStoreValue('minimizeToTray') ?? false;
+    autoCopy.value = await getStoreValue('autoCopy') ?? false;
+    useMarkdown.value = await getStoreValue('useMarkdown') ?? false;
+}
+
+// 调用初始化
+initializeSettings();
+
+// 更新存储的函数
+function updateStore(key, value) {
+    setStoreValue(key, value);
+}
+
+// 有关 Store 的通信
+// 获取存储内容
+async function getStoreValue(key) {
+    const value = await ipcRenderer.invoke('get-store', key);
+    console.log(`Value for "${key}":`, value);
+    return value;
+}
+
+// 设置存储内容
+async function setStoreValue(key, value) {
+    const success = await ipcRenderer.invoke('set-store', key, value);
+    if (success) {
+        console.log(`Stored value: { ${key}: ${value} }`);
+    }
+}
+
+// 删除存储内容
+async function deleteStoreValue(key) {
+    const success = await ipcRenderer.invoke('delete-store', key);
+    if (success) {
+        console.log(`Deleted key: ${key}`);
+    }
+}
+
 // 关闭页面
-function closeFrame() {
-    ipcRenderer.send("closeFrame");
+async function closeFrame() {
+    const minimizeToTray = await getStoreValue('minimizeToTray');
+    if (minimizeToTray === true) {
+        ipcRenderer.send("minimizeToTray");
+    } else {
+        ipcRenderer.send("closeFrame");
+    }
 }
 
 // 最小化窗口
@@ -45,6 +94,7 @@ async function fetchContent() {
         loading.value = false;
     }
 }
+
 </script>
 
 <template>
@@ -65,76 +115,119 @@ async function fetchContent() {
                 <font-awesome-icon :icon="['fas', 'xmark']" size="1x" />
             </el-button>
         </div>
-        <!-- 设置界面 -->
-        <el-dialog id="setting-dialog" v-model="showSettingDialog" width="25em" :close-on-click-modal="true"
-            :destroy-on-close="true">
-        </el-dialog>
+
         <!-- 关于页面 -->
         <el-dialog id="about-dialog" v-model="showAboutDialog" width="25em" :close-on-click-modal="true"
             :destroy-on-close="true">
-            <el-scrollbar height="400px">
-                <div id="about-title"><b>ℙ𝕚𝕔 𝕋𝕠 𝔹𝕒𝕤𝕖𝟞𝟜</b></div>
-
-                <div class="about-dialog-text"><b>关于</b></div>
-                <div id="sixiaolong">© 2022 司晓龙, 使用 MIT License.</div>
-                <div id="related-links">
-                    <a class="about-dialog-inner-text"
-                        href="https://raw.githubusercontent.com/SIXiaolong1117/vue-pictobase64/refs/heads/main/PRIVACY"
-                        target="_blank">隐私政策</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/SIXiaolong1117/vue-pictobase64/issues"
-                        target="_blank">反馈问题</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/SIXiaolong1117/vue-pictobase64"
-                        target="_blank">开源仓库</a>
-                    <a href="https://raw.githubusercontent.com/SIXiaolong1117/vue-pictobase64/refs/heads/main/LICENSE"
-                        target="_blank">MIT License</a>
-                </div>
-
-                <div id="sponsors" class="about-dialog-text"><b>赞助者</b></div>
-                <div id="sponsors-list">
-                    <el-scrollbar height="100px">
-                        <pre id="sponsors-list-content">{{ content }}</pre>
-                    </el-scrollbar>
-                    <div id="payment">
-                        <a class="about-dialog-inner-text"
-                            href="https://raw.githubusercontent.com/SIXiaolong1117/SIXiaolong1117/refs/heads/main/README/Sponsor/AliPay.jpg"
-                            target="_blank">支付宝</a>
-                        <a href="https://raw.githubusercontent.com/SIXiaolong1117/SIXiaolong1117/refs/heads/main/README/Sponsor/WeChat.png"
-                            target="_blank">微信</a>
+            <div class="dialog-back">
+                <el-scrollbar height="380px">
+                    <div id="dialog-title"><b>ℙ𝕚𝕔 𝕋𝕠 𝔹𝕒𝕤𝕖𝟞𝟜</b></div>
+                    <div class="dialog-header-text"><b>关于</b></div>
+                    <div id="sixiaolong">© 2022 司晓龙, 使用 MIT License.</div>
+                    <div id="related-links">
+                        <a class="dialog-inner-text"
+                            href="https://raw.githubusercontent.com/SIXiaolong1117/vue-pictobase64/refs/heads/main/PRIVACY"
+                            target="_blank">隐私政策</a>
+                        <a class="dialog-inner-text" href="https://github.com/SIXiaolong1117/vue-pictobase64/issues"
+                            target="_blank">反馈问题</a>
+                        <a class="dialog-inner-text" href="https://github.com/SIXiaolong1117/vue-pictobase64"
+                            target="_blank">开源仓库</a>
+                        <a href="https://raw.githubusercontent.com/SIXiaolong1117/vue-pictobase64/refs/heads/main/LICENSE"
+                            target="_blank">MIT License</a>
                     </div>
-                </div>
 
-                <div class="about-dialog-text"><b>作者</b></div>
-                <div id="author">
-                    <div id="author-content">
-                        <a class="about-dialog-inner-text" href="https://sixiaolong.win" target="_blank">司晓龙（SI
-                            Xiaolong）</a>
-                        <a href="https://linkcollection.sixiaolong.win/" target="_blank">𝓛𝓲𝓷𝓴
-                            𝓒𝓸𝓵𝓵𝓮𝓬𝓽𝓲𝓸𝓷</a>
+                    <div id="sponsors" class="dialog-header-text"><b>赞助者</b></div>
+                    <div id="sponsors-list">
+                        <el-scrollbar height="100px">
+                            <pre id="sponsors-list-content">{{ content }}</pre>
+                        </el-scrollbar>
+                        <div id="payment">
+                            <a class="dialog-inner-text"
+                                href="https://raw.githubusercontent.com/SIXiaolong1117/SIXiaolong1117/refs/heads/main/README/Sponsor/AliPay.jpg"
+                                target="_blank">支付宝</a>
+                            <a href="https://raw.githubusercontent.com/SIXiaolong1117/SIXiaolong1117/refs/heads/main/README/Sponsor/WeChat.png"
+                                target="_blank">微信</a>
+                        </div>
                     </div>
-                    <div class="avatar">
-                        <img src="https://avatars.githubusercontent.com/u/59590732?v=4" alt="Avatar" />
-                    </div>
-                </div>
 
-                <div class="about-dialog-text"><b>依赖</b></div>
-                <div id="depend">
-                    <a class="about-dialog-inner-text" href="https://github.com/vuejs/vue" target="_blank">Vue</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/vitejs/vite" target="_blank">Vite</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/electron/electron" target="_blank">Electron</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/element-plus/element-plus" target="_blank">Element Plus</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/FortAwesome/Font-Awesome" target="_blank">Font Awesome</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/open-cli-tools/concurrently" target="_blank">concurrently</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/kentcdodds/cross-env" target="_blank">cross-env</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/electron-userland/electron-builder" target="_blank">electron-builder</a>
-                    <a class="about-dialog-inner-text" href="https://github.com/jeffbski/wait-on" target="_blank">wait-on</a>
+                    <div class="dialog-header-text"><b>作者</b></div>
+                    <div id="author">
+                        <div id="author-content">
+                            <a class="dialog-inner-text" href="https://sixiaolong.win" target="_blank">司晓龙（SI
+                                Xiaolong）</a>
+                            <a href="https://linkcollection.sixiaolong.win/" target="_blank">𝓛𝓲𝓷𝓴
+                                𝓒𝓸𝓵𝓵𝓮𝓬𝓽𝓲𝓸𝓷</a>
+                        </div>
+                        <div class="avatar">
+                            <img src="https://avatars.githubusercontent.com/u/59590732?v=4" alt="Avatar" />
+                        </div>
+                    </div>
+
+                    <div class="dialog-header-text"><b>依赖</b></div>
+                    <div id="depend">
+                        <a class="dialog-inner-text" href="https://github.com/vuejs/vue" target="_blank">Vue</a>
+                        <a class="dialog-inner-text" href="https://github.com/vitejs/vite" target="_blank">Vite</a>
+                        <a class="dialog-inner-text" href="https://github.com/electron/electron"
+                            target="_blank">Electron</a>
+                        <a class="dialog-inner-text" href="https://github.com/element-plus/element-plus"
+                            target="_blank">Element Plus</a>
+                        <a class="dialog-inner-text" href="https://github.com/FortAwesome/Font-Awesome"
+                            target="_blank">Font Awesome</a>
+                        <a class="dialog-inner-text" href="https://github.com/open-cli-tools/concurrently"
+                            target="_blank">concurrently</a>
+                        <a class="dialog-inner-text" href="https://github.com/kentcdodds/cross-env"
+                            target="_blank">cross-env</a>
+                        <a class="dialog-inner-text" href="https://github.com/electron-userland/electron-builder"
+                            target="_blank">electron-builder</a>
+                        <a class="dialog-inner-text" href="https://github.com/jeffbski/wait-on"
+                            target="_blank">wait-on</a>
+                    </div>
+                </el-scrollbar>
+            </div>
+        </el-dialog>
+
+        <!-- 设置界面 -->
+        <el-dialog id="setting-dialog" v-model="showSettingDialog" width="25em" :close-on-click-modal="true"
+            :destroy-on-close="true">
+            <div class="dialog-back">
+                <div id="dialog-title"><b>设置</b></div>
+                <div class="row-div dialog-inner-text" style="margin-top: .5em;">
+                    <div class="dialog-header-text">点击关闭按钮最小化到托盘：</div>
+                    <el-switch class="dialog-switch" v-model="minimizeToTray"
+                        @update:modelValue="(value) => updateStore('minimizeToTray', value)"
+                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" inline-prompt
+                        active-text="是" inactive-text="否" />
                 </div>
-            </el-scrollbar>
+                <div class="row-div dialog-inner-text">
+                    <div class="dialog-header-text">转换后自动复制：</div>
+                    <el-switch class="dialog-switch" v-model="autoCopy"
+                        @update:modelValue="(value) => updateStore('autoCopy', value)"
+                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" inline-prompt
+                        active-text="是" inactive-text="否" />
+                </div>
+                <div class="row-div">
+                    <div class="dialog-header-text">复制时使用Markdown语法：</div>
+                    <el-switch class="dialog-switch" v-model="useMarkdown"
+                        @update:modelValue="(value) => updateStore('useMarkdown', value)"
+                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" inline-prompt
+                        active-text="是" inactive-text="否" />
+                </div>
+            </div>
         </el-dialog>
     </div>
 </template>
 
 <style scoped>
-.about-dialog-inner-text {
+.dialog-back {
+    height: 380px;
+    padding: 1em;
+    /* backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); */
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 8px;
+}
+
+.dialog-inner-text {
     margin-bottom: .5em;
 }
 
@@ -166,21 +259,19 @@ async function fetchContent() {
     object-fit: cover;
 }
 
-.about-dialog-text {}
-
-#setting-dialog {}
-
 #about-dialog {
     background-color: black !important;
 }
 
-.about-dialog-text {
+.dialog-header-text {
     user-select: none;
+    color: #ffffff;
 }
 
-#about-title {
+#dialog-title {
     font-size: 2em;
     user-select: none;
+    color: #ffffff;
 }
 
 #sponsors {
@@ -188,23 +279,19 @@ async function fetchContent() {
     user-select: none;
 }
 
-#sixiaolong {
-    margin: .5em;
-    padding: 1em;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    user-select: none;
-}
-
+#sixiaolong,
 #related-links,
 #sponsors-list,
 #author,
 #depend {
+    color: #ffffff;
     user-select: none;
     margin: .5em;
     padding: 1em;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0);
     border-radius: 8px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 #related-links,
@@ -215,9 +302,16 @@ async function fetchContent() {
 }
 
 #author,
-#sponsors-list {
+#sponsors-list,
+.row-div {
     display: flex;
     flex-direction: row;
+    color: #ffffff;
+    align-items: center;
+}
+
+.dialog-switch {
+    margin-left: auto;
 }
 
 #payment {
@@ -225,14 +319,15 @@ async function fetchContent() {
     flex-direction: column;
     margin-left: auto;
     width: 4em;
+    color: #ffffff;
 }
 
 a {
-    color: #000;
+    color: #ffffff;
 }
 
 a:hover {
-    color: #e60012;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .title {
