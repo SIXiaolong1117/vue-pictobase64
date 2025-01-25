@@ -10,8 +10,8 @@
     </a>
   </p>
   <p align="center">
-    <a href="https://twitter.com/SI_Xiaolong">
-      <img src="https://img.shields.io/badge/follow-SI_Xiaolong-blue?style=flat&logo=Twitter"/>
+    <a href="https://x.com/SI_Xiaolong">
+      <img src="https://img.shields.io/badge/follow-SI_Xiaolong-blue?style=flat&logo=x"/>
     </a>
   </p>
 </p>
@@ -29,6 +29,19 @@
 
 您可以直接到[Releases · SIXiaolong1117/vue-pictobase64](https://github.com/SIXiaolong1117/vue-PicToBase64/releases)下载已经打包好的软件。
 
+## 功能/Feature
+
+|功能|实现情况|
+|-|-|
+|图片转 Base64|✔️|
+|从本地打开图片|✔️|
+|从剪贴板打开图片|⚠️（只支持截图工具写入剪贴板的图片，不支持复制图片文件后从剪贴板打开）|
+|拖拽文件到应用界面打开图片|✔️|
+|Base64 解码|✔️（直接将解码出的图片拖到本地即可）|
+|复制时使用 Markdown 语法|✔️|
+
+<!-- ✔️❌⚠️ -->
+
 ## 🛠️获取源码/Source Code
 
 想要构建此项目，您需要：
@@ -38,10 +51,6 @@ git clone https://github.com/SIXiaolong1117/vue-pictobase64.git
 cd vue-pictobase64
 yarn
 ```
-
-<!-- > 此外，本项目使用了 [electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window)，需要 `msvc` 的支持。您需要安装 Visual Studio，并安装“使用 C++ 的桌面开发”。
-> 
-> 在非 Windows 10/11 的PC上，您可以忽略这一点。 -->
 
 运行：
 
@@ -58,7 +67,3 @@ yarn electron:build
 ## ⚖️License
 
 [MIT license](https://github.com/SIXiaolong1117/vue-PicToBase64/blob/main/LICENSE)
-
-<!-- ## 依赖/Dependencies
-
-[Seo-Rii/electron-acrylic-window](https://github.com/Seo-Rii/electron-acrylic-window) -->
