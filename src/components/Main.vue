@@ -59,6 +59,34 @@ function readImage(file) {
     }
 }
 
+// 从剪贴板读取并解析图像为 Base64
+async function readClipboard() {
+    try {
+        // 读取剪贴板内容
+        const items = await navigator.clipboard.read();
+        for (const item of items) {
+            if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+                // 获取图像内容
+                const blob = await item.getType('image/png');
+                const reader = new FileReader();
+
+                reader.onloadend = function () {
+                    // 将图像转为Base64并存储
+                    base64code.value = reader.result;
+                    const preview = document.querySelector('#img-preview');
+                    preview.src = reader.result;
+                };
+
+                reader.readAsDataURL(blob);
+                break;
+            }
+        }
+    } catch (error) {
+        console.error("读取剪贴板失败:", error);
+        alert("无法读取剪贴板内容");
+    }
+}
+
 // 复制 Base64 结果
 // TODO：点击按钮复制最好别用系统的通知，页面内通知一下就完了。系统通知可以用在后台自动转换上。
 async function copyCode() {
@@ -137,6 +165,7 @@ function handleDragOver(event) {
     </div>
     <nav>
         <el-button id="input_button" @click="openFile()" round>打开图片</el-button>
+        <el-button id="paste_button" @click="readClipboard()" round>从剪贴板</el-button>
         <el-button id="input_button" @click="base64Decode()" round>解码 Base64</el-button>
         <el-button id="copy_button" @click="copyCode()" round>复制 Base64</el-button>
         <el-button id="init_button" @click="initWindow()" round>清空内容</el-button>
