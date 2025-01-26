@@ -153,8 +153,8 @@ async function fetchContent() {
                     <div class="dialog-header-text"><b>作者</b></div>
                     <div id="author">
                         <div id="author-content">
-                            <a class="dialog-inner-text" href="https://sixiaolong.win" target="_blank">司晓龙（SI
-                                Xiaolong）</a>
+                            <a class="dialog-inner-text" href="https://sixiaolong.win" target="_blank">司晓龙 (SI
+                                Xiaolong)</a>
                             <a href="https://linkcollection.sixiaolong.win/" target="_blank">𝓛𝓲𝓷𝓴
                                 𝓒𝓸𝓵𝓵𝓮𝓬𝓽𝓲𝓸𝓷</a>
                         </div>

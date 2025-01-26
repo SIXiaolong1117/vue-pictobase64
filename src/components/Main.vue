@@ -5,6 +5,42 @@ import { ref } from 'vue'
 const base64code = ref('');
 const copiedRef = ref(false);
 
+// 监听主进程发送的事件
+ipcRenderer.on('openPicture', (event, data) => {
+    // readFile 读取文件，然后将返回的 Promise 送给 readImage 处理
+    readFile(data).then(res => {
+        readImage(res);
+    });
+});
+
+// 读取文件
+function readFile(filePath) {
+    return new Promise((resolve, reject) => {
+        var blob = null;
+        var xhr = new XMLHttpRequest();
+        var imageName = 'newImage'
+        // 向 filePath 发送 HTTP GET 请求
+        xhr.open("GET", filePath);
+        // 请求头 客户端需要 image 类型图片（这里的类型随意，因为本地指定文件只有一种类型）
+        xhr.setRequestHeader('Accept', 'image/png');
+        // 期望返回二进制数据
+        xhr.responseType = "blob";
+        // 请求成功处理
+        xhr.onload = () => {
+            blob = xhr.response;
+            let imgFile = new File([blob], imageName, { type: 'image/png' });
+            // 生成的 File 对象作为 Promise 的返回值
+            resolve(imgFile);
+        };
+        // 请求失败处理
+        xhr.onerror = (e) => {
+            reject(e)
+        };
+        // 发送请求
+        xhr.send();
+    });
+}
+
 // 有关 Store 的通信
 // 获取存储内容
 async function getStoreValue(key) {
