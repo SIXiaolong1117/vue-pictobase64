@@ -105,7 +105,7 @@ img {
 #base64_code,
 #img_area {
   margin: 0;
-  height: 55vh;
+  height: 65vh;
   width: 45vw;
   border-width: 1px;
   border-radius: 8px;
@@ -149,5 +149,4 @@ textarea {
 
 nav {
   -webkit-app-region: no-drag;
-  margin: 0;
 }

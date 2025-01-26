@@ -169,15 +169,20 @@ function initWindow() {
 // 解码 Base64
 function base64Decode() {
     console.log("解码 Base64");
-    let base64Decode = base64code.value;
-    // 处理 Markdown 语法
-    if (base64Decode.startsWith('![](') && base64Decode.endsWith(')')) {
-        // 去掉开头的 '![](' 和结尾的 ')'
-        base64Decode = base64Decode.substring(4, base64Decode.length - 1);
+    let inputString = base64code.value;
+
+    // 正则表达式匹配以 data:image/ 开头，后接任意英文字符，然后是 ;base64, 和 Base64 编码
+    const base64Pattern = /data:image\/[a-zA-Z]+;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?/;
+    const match = inputString.match(base64Pattern);
+
+    if (match) {
+        let base64Decode = match[0]; // 获取完整的匹配结果
         base64code.value = base64Decode;
+        var imgArea = document.querySelector('#img_area');
+        imgArea.innerHTML = '<img id="img-preview" src="' + base64Decode + '" alt=""/>';
+    } else {
+        console.log("未找到有效的Base64编码");
     }
-    var imgArea = document.querySelector('#img_area');
-    imgArea.innerHTML = '<img id="img-preview" src="' + base64Decode + '" alt=""/>';
 }
 
 // 处理拖拽文件
@@ -197,36 +202,50 @@ function handleDragOver(event) {
 </script>
 
 <template>
-    <div class="display" @dragover="handleDragOver" @drop="handleDrop">
-        <el-space direction="vertical">
-            <div class="head-text">
-                <h2>𝔹𝔸𝕊𝔼𝟞𝟜</h2>
-                <h3>Base64</h3>
-            </div>
-            <textarea id="base64_code" v-model="base64code" spellcheck="false"></textarea>
-        </el-space> <el-space direction="vertical">
-            <div class="head-text">
-                <h2>图片</h2>
-                <h3>Image</h3>
-            </div>
-            <p id="img_area"><img id="img-preview" src=""></p>
-        </el-space>
-    </div>
-    <nav>
-        <el-button id="input_button" @click="openFile()" round>打开图片</el-button>
-        <el-button id="paste_button" @click="readClipboard()" round>从剪贴板</el-button>
-        <el-button id="input_button" @click="base64Decode()" round>解码 Base64</el-button>
-        <el-button id="copy_button" @click="copyCode()" round>复制 Base64</el-button>
-        <el-button id="init_button" @click="initWindow()" round>清空内容</el-button>
-        <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
-    </nav>
+    <div class="display-main">
+        <div class="display" @dragover="handleDragOver" @drop="handleDrop">
+            <el-space direction="vertical">
+                <div class="head-text">
+                    <h2>𝔹𝔸𝕊𝔼𝟞𝟜</h2>
+                    <h3>Base64</h3>
+                </div>
+                <textarea id="base64_code" v-model="base64code" spellcheck="false"></textarea>
+            </el-space> <el-space direction="vertical">
+                <div class="head-text">
+                    <h2>图片</h2>
+                    <h3>Image</h3>
+                </div>
+                <p id="img_area"><img id="img-preview" src=""></p>
+            </el-space>
+        </div>
+        <nav class="nav-button">
+            <el-button id="input_button" @click="openFile()" round>打开图片</el-button>
+            <el-button id="paste_button" @click="readClipboard()" round>从剪贴板</el-button>
+            <el-button id="input_button" @click="base64Decode()" round>解码 Base64</el-button>
+            <el-button id="copy_button" @click="copyCode()" round>复制 Base64</el-button>
+            <el-button id="init_button" @click="initWindow()" round>清空内容</el-button>
+            <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
+        </nav>
 
-    <div v-if="copiedRef" class="copy-success-message">
-        <span>内容已复制！</span>
+        <div v-if="copiedRef" class="copy-success-message">
+            <span>内容已复制！</span>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.display-main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.nav-button {
+    margin-top: auto;
+}
+
 .copy-success-message {
     position: fixed;
     bottom: 1em;
