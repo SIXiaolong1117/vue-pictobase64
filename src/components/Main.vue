@@ -3,7 +3,10 @@ const { ipcRenderer } = require("electron");
 import { ref } from 'vue'
 
 const base64code = ref('');
+const copiedRef = ref(false);
 
+// 有关 Store 的通信
+// 获取存储内容
 async function getStoreValue(key) {
     const value = await ipcRenderer.invoke('get-store', key);
     console.log(`Value for "${key}":`, value);
@@ -70,11 +73,17 @@ async function readClipboard() {
                 const blob = await item.getType('image/png');
                 const reader = new FileReader();
 
-                reader.onloadend = function () {
+                reader.onloadend = async function () {
                     // 将图像转为Base64并存储
                     base64code.value = reader.result;
                     const preview = document.querySelector('#img-preview');
                     preview.src = reader.result;
+
+                    const autoCopy = await getStoreValue('autoCopy');
+                    if (autoCopy === true) {
+                        // 如果自动复制打开 调用复制函数
+                        copyCode();
+                    }
                 };
 
                 reader.readAsDataURL(blob);
@@ -91,21 +100,25 @@ async function readClipboard() {
 // TODO：点击按钮复制最好别用系统的通知，页面内通知一下就完了。系统通知可以用在后台自动转换上。
 async function copyCode() {
     var content = base64code.value;
-    const NOTIFICATION_TITLE = '复制成功'
-    var NOTIFICATION_BODY = ''
-    const CLICK_MESSAGE = 'Notification clicked!'
+    // const NOTIFICATION_TITLE = '复制成功'
+    // var NOTIFICATION_BODY = ''
+    // const CLICK_MESSAGE = 'Notification clicked!'
     const useMarkdown = await getStoreValue('useMarkdown');
     if (useMarkdown === true) {
         content = '![](' + content + ')';
-        NOTIFICATION_BODY = '复制Markdown语法成功！'
+        // NOTIFICATION_BODY = '复制Markdown语法成功！'
     }
     else {
         content = base64code.value;
-        NOTIFICATION_BODY = '复制Base64成功！'
+        // NOTIFICATION_BODY = '复制Base64成功！'
     }
     navigator.clipboard.writeText(content)
         .then(() => {
-            new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => base64code.value = CLICK_MESSAGE
+            // new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY }).onclick = () => base64code.value = CLICK_MESSAGE
+            copiedRef.value = true;
+            setTimeout(() => {
+                copiedRef.value = false;
+            }, 2000);
         })
         .catch(err => {
             console.log('出现问题：', err);
@@ -171,6 +184,68 @@ function handleDragOver(event) {
         <el-button id="init_button" @click="initWindow()" round>清空内容</el-button>
         <input type="file" id="img_upload" @change="tirggerFile($event)" style="display:none" />
     </nav>
+
+    <div v-if="copiedRef" class="copy-success-message">
+        <span>内容已复制！</span>
+    </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.copy-success-message {
+    position: fixed;
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    /* 初始设置为不可见 */
+    animation: slideInOut 2s ease-in-out forwards;
+}
+
+.copy-success-message span {
+    display: block;
+    text-align: center;
+}
+
+@keyframes slideInOut {
+    0% {
+        bottom: 1em;
+        /* 初始位置在下方 */
+        opacity: 0;
+        /* 初始不可见 */
+    }
+
+    15% {
+        bottom: 8.5em;
+        /* 顶端偏移，显示出来 */
+        opacity: 1;
+        /* 完全显示 */
+    }
+
+    20% {
+        bottom: 8em;
+        /* 顶端偏移，显示出来 */
+        opacity: 1;
+        /* 完全显示 */
+    }
+
+    80% {
+        bottom: 8em;
+        /* 保持在显示位置 */
+        opacity: 1;
+        /* 保持可见 */
+    }
+
+    100% {
+        bottom: 1em;
+        /* 向上飘出 */
+        opacity: 0;
+        /* 最终消失 */
+    }
+}
+</style>

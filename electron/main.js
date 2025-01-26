@@ -102,7 +102,10 @@ function createWindow() {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
+  // 设置背景材质
+  // 已知问题：窗口关闭再打开，背景材质应用失效。
   mainWindow.setBackgroundMaterial('acrylic');
+  
   mainWindow.show();
 }
 

@@ -19,7 +19,7 @@
     <img src="./README/01.png" width="50%"/>
 </p>
 
-## ⬇下载/Download
+## 下载/Download
 
 ### 从 Microsoft Store 获取
 
@@ -42,7 +42,7 @@
 
 <!-- ✔️❌⚠️ -->
 
-## 🛠️获取源码/Source Code
+## 获取源码/Source Code
 
 想要构建此项目，您需要：
 
@@ -64,6 +64,6 @@ yarn electron:serve
 yarn electron:build
 ```
 
-## ⚖️License
+## License
 
 [MIT license](https://github.com/SIXiaolong1117/vue-PicToBase64/blob/main/LICENSE)
