@@ -21,13 +21,13 @@
 
 ## 下载/Download
 
-### 从 Microsoft Store 获取
-
-[<img src="https://get.microsoft.com/images/zh-cn%20light.svg"  width="30%" height="30%">](https://apps.microsoft.com/store/detail/%E5%9B%BE%E7%89%87%E8%BD%ACbase64%EF%BC%88pic-to-base64%EF%BC%89/9NBF4FCR4T0G)
-
 ### 从 Releases 获取
 
 您可以直接到[Releases · SIXiaolong1117/vue-pictobase64](https://github.com/SIXiaolong1117/vue-PicToBase64/releases)下载已经打包好的软件。
+
+### 从 Microsoft Store 获取
+
+[<img src="https://get.microsoft.com/images/zh-cn%20light.svg"  width="30%" height="30%">](https://apps.microsoft.com/store/detail/%E5%9B%BE%E7%89%87%E8%BD%ACbase64%EF%BC%88pic-to-base64%EF%BC%89/9NBF4FCR4T0G)
 
 ## 功能/Feature
 

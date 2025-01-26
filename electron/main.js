@@ -6,8 +6,12 @@ import Store from 'electron-store';
 // 模拟 __dirname 和 __filename
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// Store 对象
 const store = new Store();
+// 开发环境标识
 const NODE_ENV = process.env.NODE_ENV;
+// 实例检查
+const gotTheLock = app.requestSingleInstanceLock();
 
 // 全局作用域
 let tray;
@@ -105,77 +109,90 @@ function createWindow() {
   // 设置背景材质
   // 已知问题：窗口关闭再打开，背景材质应用失效。
   mainWindow.setBackgroundMaterial('acrylic');
-  
+
   mainWindow.show();
 }
 
-app.whenReady().then(() => {
-  // 托盘图标路径
-  const imgPath =
-    NODE_ENV === 'development'
-      ? './src/assets/icon/icon.png'
-      : path.join(process.resourcesPath, 'icon.png');
+// 如果已经有实例在运行
+if (!gotTheLock) {
+  // 退出当前实例
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    // 当尝试启动第二个实例时，聚焦到已运行的窗口
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+  app.whenReady().then(() => {
+    // 托盘图标路径
+    const imgPath =
+      NODE_ENV === 'development'
+        ? './src/assets/icon/icon.png'
+        : path.join(process.resourcesPath, 'icon.png');
 
-  tray = new Tray(imgPath);
+    tray = new Tray(imgPath);
 
-  createWindow();
+    createWindow();
 
-  // 隐藏菜单栏
-  Menu.setApplicationMenu(null);
+    // 隐藏菜单栏
+    Menu.setApplicationMenu(null);
 
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: '显示主页面',
-      click: () => {
-        mainWindow.show();
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: '显示主页面',
+        click: () => {
+          mainWindow.show();
+        },
       },
-    },
-    {
-      label: '隐藏主页面',
-      click: () => {
-        mainWindow.hide();
+      {
+        label: '隐藏主页面',
+        click: () => {
+          mainWindow.hide();
+        },
       },
-    },
-    { type: 'separator' },
-    {
-      label: '打开图片',
-      click: () => {
-        dialog
-          .showOpenDialog({
-            properties: ['openFile'],
-          })
-          .then((data) => {
-            const filePath = data.filePaths.toString();
-            mainWindow.webContents.send('openPicture', filePath);
-          });
+      { type: 'separator' },
+      {
+        label: '打开图片',
+        click: () => {
+          dialog
+            .showOpenDialog({
+              properties: ['openFile'],
+            })
+            .then((data) => {
+              const filePath = data.filePaths.toString();
+              mainWindow.webContents.send('openPicture', filePath);
+            });
+        },
       },
-    },
-    { type: 'separator' },
-    {
-      label: '退出',
-      click: () => {
-        mainWindow.close();
+      { type: 'separator' },
+      {
+        label: '退出',
+        click: () => {
+          mainWindow.close();
+        },
       },
-    },
-  ]);
+    ]);
 
-  tray.setContextMenu(contextMenu);
+    tray.setContextMenu(contextMenu);
 
-  tray.setToolTip('Pic To Base64');
-  tray.setTitle('Pic To Base64');
+    tray.setToolTip('Pic To Base64');
+    tray.setTitle('Pic To Base64');
 
-  // 双击托盘图标打开应用
-  tray.on('click', () => {
-    mainWindow.setBackgroundMaterial('acrylic');
-    mainWindow.show();
+    // 双击托盘图标打开应用
+    tray.on('click', () => {
+      mainWindow.setBackgroundMaterial('acrylic');
+      mainWindow.show();
+    });
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
   });
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  // 关闭所有窗口时退出应用（除 macOS）
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
   });
-});
-
-// 关闭所有窗口时退出应用（除 macOS）
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+}
