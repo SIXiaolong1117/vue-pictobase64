@@ -1,6 +1,11 @@
 <script setup>
 const { ipcRenderer } = require("electron");
+const version = process.versions.electron; // 获取 Electron 版本
+const appVersion = process.env.npm_package_version; // 获取应用程序的版本（假设通过 npm 启动）
 import { ref } from 'vue';
+
+console.log('Electron Version:', version);
+console.log('App Version:', appVersion);
 
 // 设置项变量
 const minimizeToTray = ref(false);
@@ -121,7 +126,8 @@ async function fetchContent() {
             :destroy-on-close="true">
             <div class="dialog-back">
                 <el-scrollbar height="380px">
-                    <div id="dialog-title"><b>ℙ𝕚𝕔 𝕋𝕠 𝔹𝕒𝕤𝕖𝟞𝟜</b></div>
+                    <div id="dialog-title"><b>ℙ𝕚𝕔 𝕋𝕠 𝔹𝕒𝕤𝕖𝟞𝟜</b> v{{ appVersion }}</div>
+                    <div id="dialog-subtitle">Electron v{{ version }}</div>
                     <div class="dialog-header-text"><b>关于</b></div>
                     <div id="sixiaolong">© 2022 司晓龙, 使用 MIT License.</div>
                     <div id="related-links">
@@ -159,7 +165,7 @@ async function fetchContent() {
                                 𝓒𝓸𝓵𝓵𝓮𝓬𝓽𝓲𝓸𝓷</a>
                         </div>
                         <div class="avatar">
-                            <img src="https://avatars.githubusercontent.com/u/59590732?v=4" alt="Avatar" />
+                                <img src="https://avatars.githubusercontent.com/u/59590732?v=4" />
                         </div>
                     </div>
 
@@ -245,12 +251,12 @@ async function fetchContent() {
 
 .avatar:hover {
     transform: rotate(360deg) rotateY(360deg) scale(1.2) !important;
-    transition: transform 0.5s ease-in-out !important;
+    transition: transform 1s ease-in-out !important;
 }
 
 .avatar {
     transform: rotate(0deg) rotateY(0deg) scale(1) !important;
-    transition: transform 0.5s ease-in-out !important;
+    transition: transform .5s ease-in-out !important;
 }
 
 .avatar img {
@@ -272,6 +278,12 @@ async function fetchContent() {
     font-size: 2em;
     user-select: none;
     color: #ffffff;
+}
+
+#dialog-subtitle {
+    user-select: none;
+    margin-top: -.5em;
+    margin-bottom: .5em;
 }
 
 #sponsors {
